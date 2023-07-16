@@ -1,6 +1,7 @@
 // stocksSlice.ts
 import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
 import axios from 'axios';
+import {API} from '../api';
 
 interface Stock {
   id: string;
@@ -21,12 +22,9 @@ const initialState: StocksState = {
   error: null,
 };
 
-// Async thunk to fetch stocks data from the API
 export const fetchStocks = createAsyncThunk('stocks/fetchStocks', async () => {
   try {
-    const response = await axios.get(
-      'https://64b16133062767bc48262169.mockapi.io/api/v1/stocks',
-    );
+    const response = await axios.get(`${API}/stocks`);
     return response.data;
   } catch (error) {
     throw error.response.data;
@@ -45,7 +43,7 @@ const stocksSlice = createSlice({
       })
       .addCase(fetchStocks.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        state.data = action.payload; // Access action payload correctly
         state.error = null;
       })
       .addCase(fetchStocks.rejected, (state, action) => {
